@@ -1,0 +1,33 @@
+version: "2"
+services:
+
+  gitlab:
+    image: gitlab/gitlab-ce
+    container_name: gitlab-in
+    restart: always
+    ports:
+      - "30080:30080"
+      - "30022:22"
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url  'http://gitlab.example.com:30080'
+        gitlab_rails['gitlab_shell_ssh_port'] = 30022
+    volumes:
+      - /srv/gitlab/config:/etc/gitlab
+      - /srv/gitlab/data:/var/opt/gitlab
+      - /srv/gitlab/logs:/var/log/gitlab
+
+volumes:
+
+  data:
+    external:
+      name: ${DATA_VOLUME_HOST}
+  db:
+    external:
+      name: ${DB_VOLUME_HOST}
+
+networks:
+  default:
+    external:
+      name: ${DOCKER_NETWORK_NAME}
+
